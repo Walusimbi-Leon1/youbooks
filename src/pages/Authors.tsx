@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { FiSearch, FiLoader, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
+import { FiSearch, FiLoader, FiChevronLeft, FiChevronRight, FiTrendingUp, FiBookOpen } from 'react-icons/fi';
 import AuthorCard from '../components/AuthorCard';
 import { POPULAR_AUTHORS } from '../data/authors';
 
@@ -82,87 +82,121 @@ export default function Authors() {
   };
 
   return (
-    <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8">
-      <div className="mb-6">
-        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-1">Authors</h1>
-        <p className="text-gray-500 text-sm">Browse authors from Open Library</p>
+    <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8 sm:py-10">
+      {/* Header */}
+      <div className="mb-7">
+        <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900">Authors</h1>
+        <p className="text-gray-500 text-sm mt-1">Browse authors from Open Library</p>
       </div>
 
+      {/* Search */}
       <form onSubmit={handleSearch} className="mb-6">
-        <div className="relative max-w-xl">
-          <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+        <div className="relative max-w-xl group">
+          <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-rose-400 transition-colors" size={16} />
           <input
             type="text"
             placeholder="Search authors by name..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-11 pr-24 py-3 bg-white border border-gray-200 rounded-full text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 transition-all"
+            className="w-full pl-11 pr-28 py-3 bg-white border border-gray-200 rounded-2xl text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-400 focus:bg-white transition-all shadow-sm"
           />
           <button
             type="submit"
-            className="absolute right-2 top-1/2 -translate-y-1/2 px-5 py-1.5 bg-rose-500 text-white rounded-full text-sm font-medium hover:bg-rose-600 transition-colors"
+            className="absolute right-2 top-1/2 -translate-y-1/2 px-5 py-1.5 bg-gradient-to-r from-rose-500 to-pink-500 text-white rounded-xl text-sm font-medium hover:from-rose-600 hover:to-pink-600 transition-all shadow-sm"
           >
             Search
           </button>
         </div>
       </form>
 
-      <div className="flex gap-2 mb-6">
+      {/* Tabs */}
+      <div className="flex gap-2 mb-7">
         <button
           onClick={() => { setSearchQuery(''); setSearchParams({}); loadTrending(); }}
-          className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all ${
-            activeTab === 'trending' ? 'bg-rose-500 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+          className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-medium transition-all ${
+            activeTab === 'trending'
+              ? 'bg-gradient-to-r from-rose-500 to-pink-500 text-white shadow-sm shadow-rose-500/20'
+              : 'bg-white text-gray-600 hover:text-gray-900 border border-gray-200 hover:border-gray-300 shadow-sm'
           }`}
         >
-          Popular
+          <FiTrendingUp size={14} /> Popular
         </button>
         {searchQuery && (
           <button
             onClick={() => doSearch(searchQuery, 0)}
-            className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all ${
-              activeTab === 'search' ? 'bg-rose-500 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+            className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-medium transition-all ${
+              activeTab === 'search'
+                ? 'bg-gradient-to-r from-rose-500 to-pink-500 text-white shadow-sm shadow-rose-500/20'
+                : 'bg-white text-gray-600 hover:text-gray-900 border border-gray-200 hover:border-gray-300 shadow-sm'
             }`}
           >
-            Results
+            <FiSearch size={14} /> Results
           </button>
         )}
       </div>
 
+      {/* Results count */}
       {activeTab === 'search' && totalResults > 0 && (
-        <p className="text-gray-500 text-sm mb-4">
-          {totalResults.toLocaleString()} authors found
+        <p className="text-gray-500 text-sm mb-5">
+          <span className="font-semibold text-gray-700">{totalResults.toLocaleString()}</span> authors found
         </p>
       )}
 
+      {/* Loading */}
       {loading && (
-        <div className="flex items-center justify-center py-20">
-          <FiLoader className="animate-spin text-rose-500 text-2xl" />
-          <span className="ml-3 text-gray-500">Searching...</span>
+        <div className="flex items-center justify-center py-24">
+          <div className="text-center">
+            <FiLoader className="animate-spin text-rose-500 text-3xl mx-auto mb-3" />
+            <p className="text-gray-500 text-sm">Searching authors...</p>
+          </div>
         </div>
       )}
 
+      {/* Results grid */}
       {!loading && authors.length > 0 && (
         <>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4">
             {authors.map(({ key: authorKey, ...rest }) => (
               <AuthorCard key={authorKey} {...rest} authorKey={authorKey} />
             ))}
           </div>
 
+          {/* Pagination */}
           {activeTab === 'search' && totalResults > PER_PAGE && (
             <div className="flex items-center justify-center gap-4 mt-10">
               <button
-                onClick={() => { const p = Math.max(0, (page - 1) * PER_PAGE); doSearch(searchQuery, p); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                onClick={() => {
+                  const p = Math.max(0, (page - 1) * PER_PAGE);
+                  doSearch(searchQuery, p);
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
                 disabled={page === 0}
-                className="flex items-center gap-1 px-4 py-2 bg-white border border-gray-200 text-gray-700 text-sm rounded-full disabled:opacity-30 hover:bg-gray-50 transition-colors"
+                className="flex items-center gap-1.5 px-4 py-2.5 bg-white border border-gray-200 text-gray-700 text-sm rounded-xl disabled:opacity-30 hover:bg-gray-50 transition-all shadow-sm"
               >
-                <FiChevronLeft /> Prev
+                <FiChevronLeft /> Previous
               </button>
-              <span className="text-gray-500 text-sm">{page + 1} / {Math.ceil(totalResults / PER_PAGE)}</span>
+              <div className="flex items-center gap-2">
+                {Array.from({ length: Math.min(5, Math.ceil(totalResults / PER_PAGE)) }, (_, i) => i + 1).map((p) => (
+                  <button
+                    key={p}
+                    onClick={() => { doSearch(searchQuery, (p - 1) * PER_PAGE); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                    className={`w-9 h-9 rounded-xl text-sm font-medium transition-all ${
+                      page + 1 === p
+                        ? 'bg-rose-500 text-white shadow-sm'
+                        : 'bg-white border border-gray-200 text-gray-600 hover:border-gray-300'
+                    }`}
+                  >
+                    {p}
+                  </button>
+                ))}
+              </div>
               <button
-                onClick={() => { const n = (page + 1) * PER_PAGE; if (n < totalResults) { doSearch(searchQuery, n); window.scrollTo({ top: 0, behavior: 'smooth' }); } }}
+                onClick={() => {
+                  const n = (page + 1) * PER_PAGE;
+                  if (n < totalResults) { doSearch(searchQuery, n); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+                }}
                 disabled={(page + 1) * PER_PAGE >= totalResults}
-                className="flex items-center gap-1 px-4 py-2 bg-white border border-gray-200 text-gray-700 text-sm rounded-full disabled:opacity-30 hover:bg-gray-50 transition-colors"
+                className="flex items-center gap-1.5 px-4 py-2.5 bg-white border border-gray-200 text-gray-700 text-sm rounded-xl disabled:opacity-30 hover:bg-gray-50 transition-all shadow-sm"
               >
                 Next <FiChevronRight />
               </button>
@@ -171,10 +205,20 @@ export default function Authors() {
         </>
       )}
 
+      {/* Empty state */}
       {!loading && authors.length === 0 && (
-        <div className="text-center py-20">
-          <FiSearch className="text-3xl text-gray-300 mx-auto mb-3" />
-          <p className="text-gray-500">No authors found. Try a different search.</p>
+        <div className="text-center py-24">
+          <div className="w-16 h-16 bg-gray-50 rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <FiBookOpen className="text-2xl text-gray-300" />
+          </div>
+          <p className="text-gray-500 font-medium">No authors found</p>
+          <p className="text-gray-400 text-sm mt-1">Try a different search term</p>
+          <button
+            onClick={() => { setSearchQuery(''); setSearchParams({}); loadTrending(); }}
+            className="mt-4 px-5 py-2 text-rose-500 text-sm font-medium hover:bg-rose-50 rounded-xl transition-all"
+          >
+            Browse popular authors →
+          </button>
         </div>
       )}
     </div>

@@ -18,27 +18,38 @@ export default function AuthorCard({ authorKey, name, cover_i, birth_date, death
   return (
     <Link
       to={`/author/${authorKey}`}
-      className="group block bg-white rounded-xl p-4 border border-gray-200 hover:border-rose-300 hover:shadow-md transition-all duration-200 text-center"
+      className="group block bg-white rounded-2xl p-5 border border-gray-100 hover:border-rose-200 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 text-center"
     >
-      <div className="w-16 h-16 mx-auto rounded-full overflow-hidden bg-gray-100 mb-3 border-2 border-gray-100 group-hover:border-rose-200 transition-colors">
-        {photoUrl ? (
-          <img src={photoUrl} alt={name} className="w-full h-full object-cover" loading="lazy" />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center bg-gray-200">
-            <FiUser className="text-gray-400" size={20} />
-          </div>
-        )}
+      {/* Avatar */}
+      <div className="relative w-16 h-16 mx-auto mb-3.5">
+        <div className="w-full h-full rounded-full overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200 border-2 border-gray-100 group-hover:border-rose-200 transition-colors shadow-sm">
+          {photoUrl ? (
+            <img src={photoUrl} alt={name} className="w-full h-full object-cover" loading="lazy" />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200">
+              <FiUser className="text-gray-400" size={22} />
+            </div>
+          )}
+        </div>
+        {/* Ring glow on hover */}
+        <div className="absolute inset-0 rounded-full ring-2 ring-rose-500/0 group-hover:ring-rose-500/30 transition-all duration-300" />
       </div>
-      <h3 className="font-semibold text-gray-900 text-sm group-hover:text-rose-500 transition-colors line-clamp-2 mb-1">
+
+      {/* Name */}
+      <h3 className="font-semibold text-gray-900 text-sm leading-tight group-hover:text-rose-500 transition-colors line-clamp-2 mb-1">
         {name}
       </h3>
+
+      {/* Work count */}
       {work_count !== undefined && (
-        <p className="text-gray-500 text-xs">
-          {work_count} {work_count === 1 ? 'work' : 'works'}
+        <p className="text-gray-400 text-xs font-medium">
+          {work_count.toLocaleString()} {work_count === 1 ? 'work' : 'works'}
         </p>
       )}
+
+      {/* Dates */}
       {birth_date && (
-        <p className="text-gray-400 text-xs mt-0.5">
+        <p className="text-gray-400 text-[11px] mt-1 opacity-70">
           {birth_date}{death_date ? ` — ${death_date}` : ''}
         </p>
       )}

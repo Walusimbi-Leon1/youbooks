@@ -10,35 +10,55 @@ interface BookCardProps {
 }
 
 export default function BookCard({ id, title, author, coverUrl, year }: BookCardProps) {
+  // Generate a subtle gradient background based on the title string for fallback
+  const gradients = [
+    'from-rose-100 to-pink-100',
+    'from-blue-100 to-indigo-100',
+    'from-emerald-100 to-teal-100',
+    'from-amber-100 to-orange-100',
+    'from-violet-100 to-purple-100',
+    'from-cyan-100 to-sky-100',
+  ];
+  const gradientIndex = title.length % gradients.length;
+
   return (
     <Link
       to={`/book/${id}`}
-      className="group block bg-white rounded-xl overflow-hidden border border-gray-200 hover:border-rose-300 hover:shadow-lg transition-all duration-300"
+      className="group block bg-white rounded-2xl overflow-hidden border border-gray-100 hover:border-rose-200 hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
     >
-      <div className="aspect-[2/3] bg-gray-100 relative overflow-hidden">
+      {/* Cover */}
+      <div className="aspect-[2/3] bg-gray-50 relative overflow-hidden">
         {coverUrl ? (
           <img
             src={coverUrl}
             alt={title}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            className="w-full h-full object-cover group-hover:scale-[1.08] transition-transform duration-500"
             loading="lazy"
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center">
+          <div className={`w-full h-full bg-gradient-to-br ${gradients[gradientIndex]} flex items-center justify-center`}>
             <FiBookOpen className="text-3xl text-gray-300" />
           </div>
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-3">
-          <span className="text-white text-xs font-medium">Read Now →</span>
+        {/* Hover overlay */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
+          <span className="text-white text-xs font-medium px-3 py-1.5 bg-rose-500 rounded-full shadow-lg">
+            Read Now →
+          </span>
         </div>
       </div>
 
-      <div className="p-3">
-        <h3 className="font-semibold text-gray-900 text-sm line-clamp-2 mb-0.5 group-hover:text-rose-500 transition-colors">
+      {/* Info */}
+      <div className="p-3.5">
+        <h3 className="font-semibold text-gray-900 text-sm leading-tight line-clamp-2 group-hover:text-rose-500 transition-colors mb-0.5">
           {title}
         </h3>
-        <p className="text-gray-500 text-xs line-clamp-1">{author}</p>
-        {year && <p className="text-gray-400 text-xs mt-1">{year}</p>}
+        <p className="text-gray-400 text-xs">{author}</p>
+        {year && (
+          <span className="inline-block mt-2 text-[10px] text-gray-300 font-medium bg-gray-50 px-2 py-0.5 rounded-full border border-gray-100">
+            {year}
+          </span>
+        )}
       </div>
     </Link>
   );

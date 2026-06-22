@@ -3,7 +3,7 @@ import { getFirestore, collection, doc, getDocs, getDoc, addDoc, deleteDoc, quer
 import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'firebase/auth';
 
 const firebaseConfig = {
-  apiKey: "AIzaSy…elFo",
+  apiKey: "AIzaSyAPs3eEGejFCaFgDVkHCCwBhW4QvrmelFo",
   authDomain: "sgssbooks.firebaseapp.com",
   databaseURL: "https://sgssbooks-default-rtdb.firebaseio.com",
   projectId: "sgssbooks",
